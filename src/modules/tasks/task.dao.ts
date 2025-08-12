@@ -1,5 +1,5 @@
-import type { ICreateTask, ITask, IUpdateTask } from "./task";
-import { readFile } from "fs/promises";
+import { TaskStatus, type ICreateTask, type ITask } from "./task";
+import { readFile, writeFile } from "fs/promises";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 
@@ -17,17 +17,33 @@ const getTasks = async (): Promise<ITask[]> => {
   return tasks;
 };
 
-const findAll = async (): Promise<ITask[]> => {
+const saveTasks = async (tasks: ITask[]): Promise<void> => {
+  const filePath = getFilePath();
+  await writeFile(filePath, JSON.stringify(tasks, null, 2));
+};
+
+export const findAll = async (): Promise<ITask[]> => {
   const tasks = await getTasks();
   return tasks;
 };
 
-findAll();
+export const create = async (task: ICreateTask): Promise<ITask> => {
+  const tasks = await getTasks();
+  const newId = tasks[tasks.length - 1].id + 1;
+  const newTask: ITask = {
+    ...task,
+    id: newId,
+    status: TaskStatus.DONE,
+    createdAt: new Date(),
+  };
+
+  tasks.push(newTask);
+
+  await saveTasks(tasks);
+  return newTask;
+};
 
 /* 
-export const create = (task: ICreateTask): ITask => {
-  return;
-};
 
 export const update = (task: IUpdateTask): ITask => {
   return;
