@@ -1,15 +1,14 @@
-import type { ITask, ICreateTask, IUpdateTask } from "./task";
+import type { ITask, ICreateTask, IUpdateTask, TaskStatus } from "./task";
 import { findAll, remove, save, update } from "./task.dao";
 
-export const getTasks = async (): Promise<ITask[]> => {
+export const getTasks = async (property?: TaskStatus): Promise<ITask[]> => {
   const tasks = await findAll();
-  return tasks;
+  return property !== undefined
+    ? tasks.filter((e) => e.status === property)
+    : tasks;
 };
 
-export const createTask = async (task: ICreateTask): Promise<ITask> => {
-  const savedTask = await save(task);
-  return savedTask;
-};
+export const createTask = (task: ICreateTask): Promise<ITask> => save(task);
 
 export const updateTask = async (
   id: number,
