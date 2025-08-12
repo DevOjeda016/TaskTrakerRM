@@ -1,4 +1,9 @@
-import { TaskStatus, type ICreateTask, type ITask } from "./task";
+import {
+  TaskStatus,
+  type ICreateTask,
+  type ITask,
+  type IUpdateTask,
+} from "./task";
 import { readFile, writeFile } from "fs/promises";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
@@ -27,7 +32,7 @@ export const findAll = async (): Promise<ITask[]> => {
   return tasks;
 };
 
-export const create = async (task: ICreateTask): Promise<ITask> => {
+export const save = async (task: ICreateTask): Promise<ITask> => {
   const tasks = await getTasks();
   const newId = tasks[tasks.length - 1].id + 1;
   const newTask: ITask = {
@@ -43,10 +48,22 @@ export const create = async (task: ICreateTask): Promise<ITask> => {
   return newTask;
 };
 
-/* 
-
-export const update = (task: IUpdateTask): ITask => {
-  return;
+export const update = async (id: number, task: IUpdateTask): Promise<ITask> => {
+  const tasks = await getTasks();
+  tasks
+    .filter((e) => e.id == id)
+    .map((e) => {
+      e.status = task.status !== undefined ? task.status : e.status;
+      e.description =
+        task.description !== undefined ? task.description : e.description;
+      e.updatedAt = task.updatedAt;
+    });
+  await saveTasks(tasks);
+  return tasks.filter((e) => e.id == id)[0];
 };
 
-export const remove = (id: number): void => {}; */
+export const remove = async (id: number): Promise<void> => {
+  const tasks = await getTasks();
+  const updatedTask = tasks.filter((e) => e.id !== id);
+  await saveTasks(updatedTask);
+};
