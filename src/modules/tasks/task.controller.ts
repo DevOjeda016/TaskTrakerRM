@@ -1,5 +1,5 @@
-import { TaskStatus, type ITask } from "./task";
-import { getTasks } from "./task.services";
+import { TaskStatus, type ITask } from "./task.js";
+import { getTasks } from "./task.services.js";
 
 const normalizeStatus = (input?: string): TaskStatus | undefined => {
   if (!input) return undefined;

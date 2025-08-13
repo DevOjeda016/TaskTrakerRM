@@ -1,5 +1,5 @@
-import type { ITask, ICreateTask, IUpdateTask, TaskStatus } from "./task";
-import { findAll, remove, save, update } from "./task.dao";
+import type { ITask, ICreateTask, IUpdateTask, TaskStatus } from "./task.js";
+import { findAll, remove, save, update } from "./task.dao.js";
 
 export const getTasks = async (property?: TaskStatus): Promise<ITask[]> => {
   const tasks = await findAll();
