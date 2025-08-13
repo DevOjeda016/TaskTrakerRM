@@ -1,5 +1,5 @@
-import { TaskStatus, type ITask } from "./task.js";
-import { getTasks } from "./task.services.js";
+import { TaskStatus, type ICreateTask, type ITask } from "./task.js";
+import { createTask, getTasks } from "./task.services.js";
 
 const normalizeStatus = (input?: string): TaskStatus | undefined => {
   if (!input) return undefined;
@@ -19,13 +19,21 @@ const normalizeStatus = (input?: string): TaskStatus | undefined => {
   }
 };
 
-const list = async (property?: string): Promise<ITask[]> => {
+const list = (property?: string): Promise<ITask[]> => {
   try {
     const status = normalizeStatus(property);
-    return await getTasks(status);
+    return getTasks(status);
   } catch (e) {
     throw e;
   }
+};
+
+const create = (description: string): Promise<ITask> => {
+  if (!description) {
+    throw new Error("Need a desciption for the new task");
+  }
+
+  return createTask({ description });
 };
 
 /* const create = () => console.log("create");
@@ -36,6 +44,7 @@ const remove = () => console.log("remove"); */
 
 export default {
   list,
+  create,
   /*   create,
   update,
   remove, */

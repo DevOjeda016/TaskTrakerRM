@@ -7,7 +7,7 @@ import Table from "cli-table3";
 import chalk from "chalk";
 import { TaskStatus, type ITask } from "./modules/tasks/task.js";
 
-const [opt, property] = argv.splice(2);
+const [opt, param1, param2] = argv.splice(2);
 
 const colorizeStatus = (status: TaskStatus): string => {
   const colorMap: Record<TaskStatus, (text: string) => string> = {
@@ -19,7 +19,7 @@ const colorizeStatus = (status: TaskStatus): string => {
   return colorMap[status](status);
 };
 
-const geneateTableList = (tasks: ITask[]): void => {
+const geneateTableList = (tasks: ITask[]): ITask[] => {
   const table = new Table({
     head: [
       chalk.blue("ID"),
@@ -38,15 +38,29 @@ const geneateTableList = (tasks: ITask[]): void => {
       new Date(task.createdAt).toLocaleDateString(),
     ]);
   });
-  console.log(table.toString());
+
+  return tasks;
 };
 
 const main = () => {};
 switch (opt) {
   case Options.LIST:
     try {
-      const tasks = await actions.list(property);
-      geneateTableList(tasks);
+      const tasks = await actions.list(param1);
+      const table = geneateTableList(tasks);
+      console.log(table.toString());
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(chalk.red(error.message));
+      }
+    }
+    break;
+  case Options.ADD:
+    try {
+      const task = await actions.create(param1);
+      console.log(
+        `${chalk.green("✔")} Task ${task.description} added sucessfuffy (ID: ${task.id})`,
+      );
     } catch (error) {
       if (error instanceof Error) {
         console.log(chalk.red(error.message));
