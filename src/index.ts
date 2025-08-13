@@ -19,10 +19,6 @@ const main = async (): Promise<void> => {
         break;
 
       case Options.ADD:
-        if (!param1?.trim()) {
-          console.log(chalk.red("✗ Description is required"));
-          process.exit(1);
-        }
         const task = await actions.create(param1);
         console.log(
           `${chalk.green("✔")} Task "${task.description}" added successfully (ID: ${task.id})`,
@@ -30,10 +26,6 @@ const main = async (): Promise<void> => {
         break;
 
       case Options.UPDATE:
-        if (!param1 || !param2?.trim()) {
-          console.log(chalk.red("✗ ID and description are required"));
-          process.exit(1);
-        }
         const updatedTask = await actions.update(
           Number.parseInt(param1),
           param2,
@@ -45,10 +37,6 @@ const main = async (): Promise<void> => {
 
       case Options.MARK_DONE:
       case Options.MARK_PROGRESS:
-        if (!param1) {
-          console.log(chalk.red("✗ Task ID is required"));
-          process.exit(1);
-        }
         const statusTask = await actions.updateStatus(
           Number.parseInt(param1),
           opt,
@@ -59,10 +47,6 @@ const main = async (): Promise<void> => {
         break;
 
       case Options.DELETE:
-        if (!param1) {
-          console.log(chalk.red("✗ Task ID is required"));
-          process.exit(1);
-        }
         const isDeleted = await actions.remove(Number.parseInt(param1));
         if (isDeleted) {
           console.log(`${chalk.green("✔")} Task deleted successfully`);

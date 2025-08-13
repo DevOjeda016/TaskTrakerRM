@@ -8,6 +8,7 @@ import { readFile, writeFile, mkdir } from "fs/promises";
 import { existsSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import chalk from "chalk";
 
 const getFilePath = (): string => {
   const __filename = fileURLToPath(import.meta.url);

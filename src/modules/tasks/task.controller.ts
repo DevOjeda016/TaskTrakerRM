@@ -47,7 +47,7 @@ const list = (property?: string): Promise<ITask[]> => {
 };
 
 const create = (description: string): Promise<ITask> => {
-  if (!description) {
+  if (!description.trim()) {
     throw new Error("Task create failed: description must be provided.");
   }
 
@@ -55,7 +55,7 @@ const create = (description: string): Promise<ITask> => {
 };
 
 const update = (id: number, description: string): Promise<ITask> => {
-  if (!id || !description) {
+  if (!id || !description.trim()) {
     throw new Error(
       "Task update failed: both ID and description must be provided.",
     );
@@ -68,7 +68,7 @@ const update = (id: number, description: string): Promise<ITask> => {
 };
 
 const updateStatus = (id: number, action: string): Promise<ITask> => {
-  if (!id || !action) {
+  if (!id || !action.trim()) {
     throw new Error("Task update failed: both ID and action must be provided.");
   }
 
@@ -81,6 +81,10 @@ const updateStatus = (id: number, action: string): Promise<ITask> => {
 };
 
 const remove = (id: number): Promise<boolean> => {
+  if (!id) {
+    throw new Error("Task delete failed: both ID must be provided.");
+  }
+
   try {
     return removeTask(id);
   } catch (error) {
