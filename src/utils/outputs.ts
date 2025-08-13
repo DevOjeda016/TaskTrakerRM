@@ -12,7 +12,7 @@ const colorizeStatus = (status: TaskStatus): string => {
   return colorMap[status](status);
 };
 
-export const geneateTableList = (tasks: ITask[]) => {
+export const generateTableList = (tasks: ITask[]) => {
   const table = new Table({
     head: [
       chalk.blue("ID"),
