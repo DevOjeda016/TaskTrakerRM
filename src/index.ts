@@ -79,6 +79,7 @@ switch (opt) {
   case Options.VERSION:
   case Options.V:
     console.log(`Version: ${version}`);
+    break;
   default:
     generateHelp();
 }
