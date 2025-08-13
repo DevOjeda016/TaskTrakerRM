@@ -1,12 +1,5 @@
 [
   {
-    "id": 1,
-    "description": "Estudiar TypeScript",
-    "status": "todo",
-    "createdAt": "2025-08-01T10:00:00.000Z",
-    "updatedAt": null
-  },
-  {
     "id": 2,
     "description": "Implementar CLI de tareas",
     "status": "in progress",

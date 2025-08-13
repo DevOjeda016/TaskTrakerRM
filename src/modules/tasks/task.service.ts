@@ -22,6 +22,10 @@ export const updateTask = async (
   }
 };
 
-export const removeTask = async (id: number): Promise<void> => {
-  await remove(id);
+export const removeTask = async (id: number): Promise<boolean> => {
+  try {
+    return await remove(id);
+  } catch (error) {
+    throw error;
+  }
 };

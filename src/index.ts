@@ -3,48 +3,11 @@
 import { argv } from "node:process";
 import { Options } from "./options.js";
 import actions from "./modules/tasks/index.js";
-import Table from "cli-table3";
 import chalk from "chalk";
-import { TaskStatus, type ITask } from "./modules/tasks/task.js";
+import { version } from "./../package.json";
+import { geneateTableList, generateHelp } from "./utils/outputs.js";
 
 const [opt, param1, param2] = argv.splice(2);
-
-const colorizeStatus = (status: TaskStatus): string => {
-  const colorMap: Record<TaskStatus, (text: string) => string> = {
-    [TaskStatus.DONE]: chalk.green,
-    [TaskStatus.PROGRESS]: chalk.yellow,
-    [TaskStatus.TODO]: chalk.white,
-  };
-
-  return colorMap[status](status);
-};
-
-const geneateTableList = (tasks: ITask[]) => {
-  const table = new Table({
-    head: [
-      chalk.blue("ID"),
-      chalk.blue("Description"),
-      chalk.blue("Status"),
-      chalk.blue("Created"),
-      chalk.blue("Updated"),
-    ],
-    colWidths: [5, 30, 15, 12, 12],
-  });
-
-  tasks.forEach((task) => {
-    table.push([
-      chalk.blueBright(task.id),
-      task.description,
-      colorizeStatus(task.status),
-      new Date(task.createdAt).toLocaleDateString(),
-      task.updatedAt !== undefined
-        ? new Date(task.updatedAt).toLocaleDateString()
-        : "-".repeat(8),
-    ]);
-  });
-
-  return table;
-};
 
 const main = () => {};
 switch (opt) {
@@ -63,7 +26,7 @@ switch (opt) {
     try {
       const task = await actions.create(param1);
       console.log(
-        `${chalk.green("✔")} Task ${task.description} added sucessfuffy (ID: ${task.id})`,
+        `${chalk.green("✔")} Task ${task.description} added sucessfully (ID: ${task.id})`,
       );
     } catch (error) {
       if (error instanceof Error) {
@@ -75,7 +38,7 @@ switch (opt) {
     try {
       const task = await actions.update(Number.parseInt(param1), param2);
       console.log(
-        `${chalk.green("✔")} Task updated to ${task.description} sucessfuffy`,
+        `${chalk.green("✔")} Task updated to ${task.description} sucessfully`,
       );
     } catch (error) {
       if (error instanceof Error) {
@@ -89,7 +52,7 @@ switch (opt) {
       console.log(opt, param1);
       const task = await actions.updateStatus(Number.parseInt(param1), opt);
       console.log(
-        `${chalk.green("✔")} Task ${task.description} updated to status: ${task.status} sucessfuffy`,
+        `${chalk.green("✔")} Task ${task.description} updated to status: ${task.status} sucessfully`,
       );
     } catch (error) {
       if (error instanceof Error) {
@@ -97,6 +60,27 @@ switch (opt) {
       }
     }
     break;
+  case Options.DELETE:
+    try {
+      const isDeleted = await actions.remove(Number.parseInt(param1));
+      if (isDeleted) {
+        console.log(`${chalk.green("✔")} Task deleted sucessfully`);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(chalk.red(error.message));
+      }
+    }
+    break;
+  case Options.HELP:
+  case Options.H:
+    generateHelp();
+    break;
+  case Options.VERSION:
+  case Options.V:
+    console.log(`Version: ${version}`);
+  default:
+    generateHelp();
 }
 
 main();

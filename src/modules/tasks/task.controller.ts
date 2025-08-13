@@ -1,5 +1,10 @@
 import { TaskStatus, type ITask } from "./task.js";
-import { createTask, getTasks, updateTask } from "./task.services.js";
+import {
+  createTask,
+  getTasks,
+  removeTask,
+  updateTask,
+} from "./task.service.js";
 
 const normalizeStatus = (input?: string): TaskStatus | undefined => {
   if (!input) return undefined;
@@ -49,7 +54,7 @@ const create = (description: string): Promise<ITask> => {
   return createTask({ description });
 };
 
-const update = (id: number, description: string) => {
+const update = (id: number, description: string): Promise<ITask> => {
   if (!id || !description) {
     throw new Error(
       "Task update failed: both ID and description must be provided.",
@@ -62,15 +67,22 @@ const update = (id: number, description: string) => {
   }
 };
 
-const updateStatus = (id: number, action: string) => {
+const updateStatus = (id: number, action: string): Promise<ITask> => {
   if (!id || !action) {
     throw new Error("Task update failed: both ID and action must be provided.");
   }
 
   const status = normalizeAction(action);
-  console.log(status);
   try {
     return updateTask(id, { status });
+  } catch (error) {
+    throw error;
+  }
+};
+
+const remove = (id: number): Promise<boolean> => {
+  try {
+    return removeTask(id);
   } catch (error) {
     throw error;
   }
@@ -81,4 +93,5 @@ export default {
   create,
   update,
   updateStatus,
+  remove,
 };
