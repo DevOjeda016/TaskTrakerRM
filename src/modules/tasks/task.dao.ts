@@ -75,7 +75,7 @@ export const update = async (id: number, task: IUpdateTask): Promise<ITask> => {
   const taskIndex = tasks.findIndex((t) => t.id === id);
 
   if (taskIndex === -1) {
-    throw new Error(`Task with id ${id} not found`);
+    throw new Error(`Task update failed: ${id} not found`);
   }
 
   tasks[taskIndex] = {
@@ -92,8 +92,17 @@ export const update = async (id: number, task: IUpdateTask): Promise<ITask> => {
   return tasks[taskIndex];
 };
 
-export const remove = async (id: number): Promise<void> => {
+export const remove = async (id: number): Promise<boolean> => {
+  let isDeleted = false;
   const tasks = await getTasks();
+
+  const taskIndex = tasks.findIndex((t) => t.id === id);
+  if (taskIndex === -1) {
+    throw new Error(`Task delete failed: ${id} not found`);
+  }
+
   const updatedTasks = tasks.filter((e) => e.id !== id);
   await saveTasks(updatedTasks);
+  isDeleted = true;
+  return isDeleted;
 };

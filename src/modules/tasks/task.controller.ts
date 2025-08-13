@@ -1,5 +1,10 @@
 import { TaskStatus, type ITask } from "./task.js";
-import { getTasks } from "./task.services.js";
+import {
+  createTask,
+  getTasks,
+  removeTask,
+  updateTask,
+} from "./task.service.js";
 
 const normalizeStatus = (input?: string): TaskStatus | undefined => {
   if (!input) return undefined;
@@ -14,29 +19,79 @@ const normalizeStatus = (input?: string): TaskStatus | undefined => {
       return TaskStatus.PROGRESS;
     default:
       throw new Error(
-        "Property is not supported: try with TODO, PROGRESS, DONE",
+        'Invalid status value. Supported values are: "todo", "process", "in-progress", or "done".',
       );
   }
 };
 
-const list = async (property?: string): Promise<ITask[]> => {
+const normalizeAction = (action: string): TaskStatus => {
+  switch (action.toLowerCase()) {
+    case "mark-todo":
+      return TaskStatus.TODO;
+    case "mark-in-progress":
+      return TaskStatus.PROGRESS;
+    default:
+      throw new Error(
+        'Invalid action. Supported values are: "mark-todo", "mark-in-progress".',
+      );
+  }
+};
+
+const list = (property?: string): Promise<ITask[]> => {
   try {
     const status = normalizeStatus(property);
-    return await getTasks(status);
+    return getTasks(status);
   } catch (e) {
     throw e;
   }
 };
 
-/* const create = () => console.log("create");
+const create = (description: string): Promise<ITask> => {
+  if (!description) {
+    throw new Error("Task create failed: description must be provided.");
+  }
 
-const update = () => console.log("update");
+  return createTask({ description });
+};
 
-const remove = () => console.log("remove"); */
+const update = (id: number, description: string): Promise<ITask> => {
+  if (!id || !description) {
+    throw new Error(
+      "Task update failed: both ID and description must be provided.",
+    );
+  }
+  try {
+    return updateTask(id, { description });
+  } catch (error) {
+    throw error;
+  }
+};
+
+const updateStatus = (id: number, action: string): Promise<ITask> => {
+  if (!id || !action) {
+    throw new Error("Task update failed: both ID and action must be provided.");
+  }
+
+  const status = normalizeAction(action);
+  try {
+    return updateTask(id, { status });
+  } catch (error) {
+    throw error;
+  }
+};
+
+const remove = (id: number): Promise<boolean> => {
+  try {
+    return removeTask(id);
+  } catch (error) {
+    throw error;
+  }
+};
 
 export default {
   list,
-  /*   create,
+  create,
   update,
-  remove, */
+  updateStatus,
+  remove,
 };
