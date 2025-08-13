@@ -3,6 +3,6 @@ export enum Options {
   ADD = "add",
   UPDATE = "update",
   DELETE = "delete",
-  MARK_PROGRESS = "mask-in-progess",
+  MARK_PROGRESS = "mark-in-progress",
   MARK_DONE = "mark-done",
 }

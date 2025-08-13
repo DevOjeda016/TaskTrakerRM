@@ -19,15 +19,16 @@ const colorizeStatus = (status: TaskStatus): string => {
   return colorMap[status](status);
 };
 
-const geneateTableList = (tasks: ITask[]): ITask[] => {
+const geneateTableList = (tasks: ITask[]) => {
   const table = new Table({
     head: [
       chalk.blue("ID"),
       chalk.blue("Description"),
       chalk.blue("Status"),
       chalk.blue("Created"),
+      chalk.blue("Updated"),
     ],
-    colWidths: [5, 30, 15, 12],
+    colWidths: [5, 30, 15, 12, 12],
   });
 
   tasks.forEach((task) => {
@@ -36,10 +37,13 @@ const geneateTableList = (tasks: ITask[]): ITask[] => {
       task.description,
       colorizeStatus(task.status),
       new Date(task.createdAt).toLocaleDateString(),
+      task.updatedAt !== undefined
+        ? new Date(task.updatedAt).toLocaleDateString()
+        : "-".repeat(8),
     ]);
   });
 
-  return tasks;
+  return table;
 };
 
 const main = () => {};
@@ -60,6 +64,32 @@ switch (opt) {
       const task = await actions.create(param1);
       console.log(
         `${chalk.green("✔")} Task ${task.description} added sucessfuffy (ID: ${task.id})`,
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(chalk.red(error.message));
+      }
+    }
+    break;
+  case Options.UPDATE:
+    try {
+      const task = await actions.update(Number.parseInt(param1), param2);
+      console.log(
+        `${chalk.green("✔")} Task updated to ${task.description} sucessfuffy`,
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(chalk.red(error.message));
+      }
+    }
+    break;
+  case Options.MARK_DONE:
+  case Options.MARK_PROGRESS:
+    try {
+      console.log(opt, param1);
+      const task = await actions.updateStatus(Number.parseInt(param1), opt);
+      console.log(
+        `${chalk.green("✔")} Task ${task.description} updated to status: ${task.status} sucessfuffy`,
       );
     } catch (error) {
       if (error instanceof Error) {

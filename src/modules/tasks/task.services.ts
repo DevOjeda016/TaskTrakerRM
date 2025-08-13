@@ -14,8 +14,12 @@ export const updateTask = async (
   id: number,
   task: IUpdateTask,
 ): Promise<ITask> => {
-  const updatedTask = await update(id, task);
-  return updatedTask;
+  try {
+    const updatedTask = await update(id, task);
+    return updatedTask;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const removeTask = async (id: number): Promise<void> => {

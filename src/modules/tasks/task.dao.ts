@@ -75,7 +75,7 @@ export const update = async (id: number, task: IUpdateTask): Promise<ITask> => {
   const taskIndex = tasks.findIndex((t) => t.id === id);
 
   if (taskIndex === -1) {
-    throw new Error(`Task with id ${id} not found`);
+    throw new Error(`Task update failed: ${id} not found`);
   }
 
   tasks[taskIndex] = {

@@ -1,5 +1,5 @@
-import { TaskStatus, type ICreateTask, type ITask } from "./task.js";
-import { createTask, getTasks } from "./task.services.js";
+import { TaskStatus, type ITask } from "./task.js";
+import { createTask, getTasks, updateTask } from "./task.services.js";
 
 const normalizeStatus = (input?: string): TaskStatus | undefined => {
   if (!input) return undefined;
@@ -19,6 +19,19 @@ const normalizeStatus = (input?: string): TaskStatus | undefined => {
   }
 };
 
+const normalizeAction = (action: string): TaskStatus => {
+  switch (action.toLowerCase()) {
+    case "mark-todo":
+      return TaskStatus.TODO;
+    case "mark-in-progress":
+      return TaskStatus.PROGRESS;
+    default:
+      throw new Error(
+        'Invalid action. Supported values are: "mark-todo", "mark-in-progress".',
+      );
+  }
+};
+
 const list = (property?: string): Promise<ITask[]> => {
   try {
     const status = normalizeStatus(property);
@@ -30,22 +43,42 @@ const list = (property?: string): Promise<ITask[]> => {
 
 const create = (description: string): Promise<ITask> => {
   if (!description) {
-    throw new Error("Need a desciption for the new task");
+    throw new Error("Task create failed: description must be provided.");
   }
 
   return createTask({ description });
 };
 
-/* const create = () => console.log("create");
+const update = (id: number, description: string) => {
+  if (!id || !description) {
+    throw new Error(
+      "Task update failed: both ID and description must be provided.",
+    );
+  }
+  try {
+    return updateTask(id, { description });
+  } catch (error) {
+    throw error;
+  }
+};
 
-const update = () => console.log("update");
+const updateStatus = (id: number, action: string) => {
+  if (!id || !action) {
+    throw new Error("Task update failed: both ID and action must be provided.");
+  }
 
-const remove = () => console.log("remove"); */
+  const status = normalizeAction(action);
+  console.log(status);
+  try {
+    return updateTask(id, { status });
+  } catch (error) {
+    throw error;
+  }
+};
 
 export default {
   list,
   create,
-  /*   create,
   update,
-  remove, */
+  updateStatus,
 };
