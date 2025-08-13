@@ -14,7 +14,7 @@ const normalizeStatus = (input?: string): TaskStatus | undefined => {
       return TaskStatus.PROGRESS;
     default:
       throw new Error(
-        "Property is not supported: try with TODO, PROGRESS, DONE",
+        'Invalid status value. Supported values are: "todo", "process", "in-progress", or "done".',
       );
   }
 };
