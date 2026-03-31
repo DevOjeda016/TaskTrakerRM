@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 import { argv } from "node:process";
+import { createRequire } from "node:module";
 import { Options } from "./options.js";
 import actions from "./modules/tasks/index.js";
 import chalk from "chalk";
-import pkg from "./../package.json" with { type: "json" };
 import { generateTableList, generateHelp } from "./utils/outputs.js";
 import { handleError } from "./utils/helper.js";
+
+const require = createRequire(import.meta.url);
+const pkg = require("./../package.json") as { version: string };
 
 const [opt, param1, param2] = argv.splice(2);
 

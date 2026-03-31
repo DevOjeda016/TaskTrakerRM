@@ -19,7 +19,7 @@ const normalizeStatus = (input?: string): TaskStatus | undefined => {
       return TaskStatus.PROGRESS;
     default:
       throw new Error(
-        'Invalid status value. Supported values are: "todo", "process", "in-progress", or "done".',
+        'Invalid status value. Supported values are: "todo", "progress", "in-progress", or "done".',
       );
   }
 };
@@ -28,11 +28,13 @@ const normalizeAction = (action: string): TaskStatus => {
   switch (action.toLowerCase()) {
     case "mark-todo":
       return TaskStatus.TODO;
+    case "mark-done":
+      return TaskStatus.DONE;
     case "mark-in-progress":
       return TaskStatus.PROGRESS;
     default:
       throw new Error(
-        'Invalid action. Supported values are: "mark-todo", "mark-in-progress".',
+        'Invalid action. Supported values are: "mark-todo", "mark-in-progress", or "mark-done".',
       );
   }
 };
